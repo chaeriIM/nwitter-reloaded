@@ -7,7 +7,7 @@ const Button = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 50px;
+  margin: 20px 0;
   padding: 10px 20px;
   gap: 5px;
   width: 100%;
@@ -17,10 +17,14 @@ const Button = styled.span`
   border-radius: 50px;
   border: 0;
   cursor: pointer;
+  transition: .3s;
+  &:hover {
+    opacity: 0.9;
+  }
 `;
 
 const Logo = styled.img`
-  height: 25px;
+  height: 20px;
 `;
 
 export default function GithubButton() {

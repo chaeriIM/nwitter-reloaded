@@ -9,7 +9,9 @@ import {
   Switcher, 
   Title, 
   Error, 
-  Wrapper 
+  Wrapper,
+  Seperate,
+  Reset
 } from "../components/auth-components";
 import GithubButton from "../components/github-btn";
 
@@ -46,19 +48,25 @@ export default function CreateAccount() {
     }
   };
 
+  const onClick = async () => {
+    navigate("/reset-password")
+  };
+
   return (
     <Wrapper>
       <Title>𝕏에 로그인하기</Title>
+      <GithubButton />
+      <Seperate><hr />또는<hr /></Seperate>
       <Form onSubmit={onSubmit}>
         <Input onChange={onChange} name="email" value={email} placeholder="이메일" type="email" required />
         <Input onChange={onChange} name="password" value={password} placeholder="비밀번호" type="password" required/>
         <Input type="submit" value={isLoading ? "Loading..." : "로그인하기"} />
       </Form>
       {error !== "" ? <Error>{error}</Error> : null}
+      <Reset onClick={onClick}>비밀번호를 잊으셨나요?</Reset>
       <Switcher>
         계정이 없으신가요?{" "} <Link to="/create-account">가입하기</Link>
       </Switcher>
-      <GithubButton />
     </Wrapper>
   );
 }
