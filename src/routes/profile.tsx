@@ -37,8 +37,63 @@ const AvatarInput = styled.input`
   display: none;
 `;
 
+const Column = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
 const Name = styled.span`
   font-size: 22px;
+`;
+
+const EditButton = styled.button`
+  background-color: pink;
+  color: white;
+  font-weight: 600;
+  border: 0;
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 5px 10px;
+  cursor: pointer;
+`;
+
+const SaveButton = styled.button`
+  background-color: green;
+  color: white;
+  font-weight: 600;
+  border: 0;
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 5px 10px;
+  cursor: pointer;
+`;
+
+const CancelButton = styled.button`
+  background-color: gray;
+  color: white;
+  font-weight: 600;
+  border: 0;
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 5px 10px;
+  cursor: pointer;
+`;
+
+const EditInput = styled.input`
+  padding: 20px;
+  border: 1px solid white;
+  border-radius: 20px;
+  font-size: 16px;
+  color: white;
+  background-color: black;
+  transition: .4s;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  &:focus {
+    outline: none;
+    border-color: #1d9bf0;
+  }
 `;
 
 const Tweets = styled.div`
@@ -52,6 +107,8 @@ export default function Profile() {
   const user = auth.currentUser;
   const [avatar, setAvatar] = useState(user?.photoURL);
   const [tweets, setTweets] = useState<ITweet[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(user?.displayName ?? "익명");
 
   const onAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -63,6 +120,30 @@ export default function Profile() {
       const avatarUrl = await getDownloadURL(result.ref);
       setAvatar(avatarUrl);
       await updateProfile(user, { photoURL: avatarUrl });
+    }
+  };
+
+  const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
+
+  const onEdit = () => {
+    setIsEditing(true);
+  };
+
+  const onCancel = () => {
+    setIsEditing(false);
+  };
+
+  const onSave = async () => {
+    if (name === "" || !user) return;
+
+    try {
+      await updateProfile(user, { displayName: name });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsEditing(false);
     }
   };
 
@@ -109,7 +190,22 @@ export default function Profile() {
         type="file" 
         accept="image/*" 
       />
-      <Name>{user?.displayName ?? "익명"}</Name>
+      <Column>
+        {isEditing ? (
+          <>
+            <EditInput onChange={onNameChange} value={name} type="text" />
+            <>
+              <SaveButton onClick={onSave}>저장</SaveButton>
+              <CancelButton onClick={onCancel}>취소</CancelButton>
+            </>
+          </>
+        ) : (
+          <>
+            <Name>{user?.displayName ?? "익명"}</Name>
+            <EditButton onClick={onEdit}>수정</EditButton>
+          </>
+        )}
+      </Column>
       <Tweets>
         {tweets.map((tweet) => (
           <Tweet key={tweet.id} {...tweet} />

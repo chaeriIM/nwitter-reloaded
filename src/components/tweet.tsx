@@ -212,10 +212,10 @@ export default function Tweet({ username, photo, tweet, userId, id }: ITweet) {
         {user?.uid === userId ? (
           <>
             {isEditing ? (
-              <>
+              <div>
                 <SaveButton onClick={onSave}>저장</SaveButton>
                 <CancelButton onClick={onCancel}>취소</CancelButton>
-              </>
+              </div>
             ) : (
               <>
                 <EditButton onClick={onEdit}>수정</EditButton>
